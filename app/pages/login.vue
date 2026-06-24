@@ -53,6 +53,11 @@
   })
 
   client.requestAccessToken()
+
+  // @ts-nocheck
+  definePageMeta({
+  middleware: 'auth'
+})
  }
 </script>
  
