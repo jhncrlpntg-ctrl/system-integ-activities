@@ -11,7 +11,9 @@
       <p>Walang nabasang QR code.</p>
     </div>
 
-    <button @click="goBack" class="btn back">Bumalik sa Scan</button>
+    <button @click="goBack" class="btn back">
+      Bumalik sa Scan
+    </button>
   </div>
 </template>
 
@@ -21,13 +23,11 @@ import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
+
 const qrData = ref('')
 
 onMounted(() => {
-  // Kunin ang data galing sa scan page
-  if (route.query.data) {
-    qrData.value = route.query.data
-  }
+  qrData.value = route.query.data || 'No data found'
 })
 
 const goBack = () => {
@@ -71,7 +71,6 @@ pre {
   border-radius: 8px;
   background: #6b7280;
   color: white;
-  font-size: 1rem;
   cursor: pointer;
 }
 </style>

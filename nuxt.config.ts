@@ -2,28 +2,53 @@ import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
-  devtools: { enabled: true },
-  build: {
-    transpile: ['vuetify'],
+
+  devtools: {
+    enabled: true
   },
+
+  modules: [
+    '@nuxtjs/leaflet'
+  ],
+
+  css: [
+    'leaflet/dist/leaflet.css'
+  ],
+
+  build: {
+    transpile: [
+      'vuetify'
+    ]
+  },
+
   vite: {
     plugins: [
-      vuetify({ autoImport: true }),
+      vuetify({
+        autoImport: true
+      })
     ],
+
     vue: {
       template: {
-        transformAssetUrls,
-      },
+        transformAssetUrls
+      }
     },
-    
+
     optimizeDeps: {
-      include: ['qr-scanner']
+      include: [
+        'qr-scanner',
+        'leaflet'
+      ]
     },
-    assetsInclude: ['**/*.worker.js']
+
+    assetsInclude: [
+      '**/*.worker.js'
+    ]
   },
+
   runtimeConfig: {
     public: {
-      //@ts-ignore
+      // @ts-ignore
       googleClientId: process.env.NUXT_PUBLIC_GOOGLE_CLIENT_ID
     }
   }

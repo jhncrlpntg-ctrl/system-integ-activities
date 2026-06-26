@@ -11,19 +11,39 @@
     ></video>
 
     <div class="buttons">
-      <button @click="startScan" class="btn start">Start Scan</button>
-      <button @click="stopScan" class="btn stop">Stop Scan</button>
+
+      <!-- START (hidden kapag scanning) -->
+      <button
+        v-if="!isScanning"
+        @click="startScan"
+        class="btn start"
+      >
+        Start Scan
+      </button>
+
+      <!-- STOP (visible lang kapag scanning) -->
+      <button
+        v-if="isScanning"
+        @click="stopScan"
+        class="btn stop single"
+      >
+        Stop Scan
+      </button>
+
     </div>
   </div>
 </template>
 
 <script setup>
-import { onUnmounted } from 'vue'
+import { ref, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 let qrScannerInstance = null
 
+const isScanning = ref(false)
+
+/* CLEANUP */
 onUnmounted(() => {
   if (qrScannerInstance) {
     qrScannerInstance.stop()
@@ -32,12 +52,14 @@ onUnmounted(() => {
   }
 })
 
+/* START SCAN */
 const startScan = async () => {
   if (import.meta.server) return
 
   try {
     const QrScanner = (await import('qr-scanner')).default
     const videoEl = document.getElementById('qr-video')
+
     if (!videoEl) throw new Error('Video not found')
 
     if (qrScannerInstance) {
@@ -48,11 +70,11 @@ const startScan = async () => {
     qrScannerInstance = new QrScanner(
       videoEl,
       (result) => {
-        // Pagkabasa, isara ang scanner at pumunta sa view page
         stopScan()
+
         router.push({
           path: '/qr-view',
-          query: { data: result.data } // ipapasa ang resulta
+          query: { data: result.data }
         })
       },
       {
@@ -64,19 +86,29 @@ const startScan = async () => {
       }
     )
 
+    /* 🔥 IMPORTANT FIX */
+    isScanning.value = true
+
     await qrScannerInstance.start()
+
   } catch (err) {
     console.error(err)
-    alert('Payagan ang paggamit ng camera sa browser')
+    alert('Payagan ang camera access')
+    isScanning.value = false
   }
 }
 
+/* STOP SCAN */
 const stopScan = () => {
   if (qrScannerInstance) {
     qrScannerInstance.stop()
     qrScannerInstance.destroy()
     qrScannerInstance = null
   }
+
+  isScanning.value = false
+
+  router.push('/')
 }
 </script>
 
@@ -99,8 +131,8 @@ const stopScan = () => {
 
 .buttons {
   display: flex;
-  gap: 1rem;
   justify-content: center;
+  gap: 1rem;
 }
 
 .btn {
@@ -111,6 +143,17 @@ const stopScan = () => {
   cursor: pointer;
 }
 
-.start { background: #16a34a; color: white; }
-.stop { background: #dc2626; color: white; }
+.start {
+  background: #16a34a;
+  color: white;
+}
+
+.stop {
+  background: #dc2626;
+  color: white;
+}
+
+.single {
+  width: 200px;
+}
 </style>
