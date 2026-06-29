@@ -2,28 +2,18 @@
   <div class="weather-card">
     <h1 class="app-title">🌤️ Weather Update</h1>
 
-    <!-- Loading State Habang Nag-fe-fetch ng Data -->
-    <div v-if="isLoading" class="loading-state">
-      <p>Kinukuha ang ulat panahon...</p>
-    </div>
-
-    <!-- Error State Kapag Mali ang Lungsod sa URL o may Isyu sa Koneksyon -->
-    <div v-else-if="errorMessage" class="error-state">
-      <p>❌ {{ errorMessage }}</p>
-    </div>
-
-    <!-- Dito magsisimula ang magandang layout kapag may data na -->
-    <div v-else-if="currentWeather" class="weather-display">
+    <!-- 💡 Lalabas lang ang layout kapag tapos na mag-load at may valid data ang currentWeather -->
+    <div v-if="currentWeather" class="weather-display">
       
       <!-- MAIN BOX: Icon at Temperature -->
       <div class="main-weather-box">
-        <h2 class="location-name">{{ currentWeather.location.name }}, {{ currentWeather.location.country }}</h2>
+        <h2 class="location-name">{{ currentWeather.location?.name }}, {{ currentWeather.location?.country }}</h2>
         <div class="hero-weather">
-          <!-- Weather Icon galing sa API Explorer -->
-          <img :src="`https:${currentWeather.current.condition.icon}`" alt="Weather Icon" class="weather-icon" />
+          <!-- Weather Icon galing sa API -->
+          <img :src="`https:${currentWeather.current?.condition?.icon}`" alt="Weather Icon" class="weather-icon" />
           <div class="temp-condition">
-            <span class="main-temp">{{ currentWeather.current.temp_c }}°C</span>
-            <p class="condition-text">{{ currentWeather.current.condition.text }}</p>
+            <span class="main-temp">{{ currentWeather.current?.temp_c }}°C</span>
+            <p class="condition-text">{{ currentWeather.current?.condition?.text }}</p>
           </div>
         </div>
       </div>
@@ -32,30 +22,30 @@
       <div class="details-grid">
         <div class="info-box">
           <span class="box-label">Wind Speed</span>
-          <span class="box-value">💨 {{ currentWeather.current.wind_kph }} kph</span>
+          <span class="box-value">💨 {{ currentWeather.current?.wind_kph }} kph</span>
         </div>
         <div class="info-box">
           <span class="box-label">Humidity</span>
-          <span class="box-value">💧 {{ currentWeather.current.humidity }}%</span>
+          <span class="box-value">💧 {{ currentWeather.current?.humidity }}%</span>
         </div>
         <div class="info-box">
           <span class="box-label">Feels Like</span>
-          <span class="box-value">🌡️ {{ currentWeather.current.feelslike_c }}°C</span>
+          <span class="box-value">🌡️ {{ currentWeather.current?.feelslike_c }}°C</span>
         </div>
         <div class="info-box">
           <span class="box-label">UV Index</span>
-          <span class="box-value">☀️ {{ currentWeather.current.uv }}</span>
+          <span class="box-value">☀️ {{ currentWeather.current?.uv }}</span>
         </div>
       </div>
 
     </div>
 
-    <!-- REFRESH BUTTON (Naka-lock sa pinakailalim) -->
+    <!-- REFRESH BUTTON (Outlined / Transparent at nasa pinakailalim) -->
     <v-btn 
+      variant="outlined"
       color="primary" 
       @click="getWeatherData" 
       class="refresh-btn"
-      :loading="isLoading"
       block
     >
       <v-icon start>mdi-refresh</v-icon>
@@ -66,7 +56,6 @@
 </template>
 
 <script lang="ts" setup>
-//@ts-nocheck
 import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -76,34 +65,23 @@ definePageMeta({
 })
 
 const route = useRoute()
-const currentWeather = ref(null)
-const isLoading = ref(false)
-const errorMessage = ref('')
+const currentWeather = ref<any>(null)
 
 const getWeatherData = async () => {
-  // 🔥 IMPORTANT SECURITY FIX: Pinipigilan ang Nuxt Server SSR na patakbuhin ito
+  // Ligtas na panseguridad para sa browser execution
   if (!import.meta.client) return
 
-  isLoading.value = true
-  errorMessage.value = ''
-  
-  // Kukunin ang "q" parameter sa URL (e.g., ?q=Manila). Kung wala, babalik sa default na "Manila"
   const cityQuery = route.query.q || 'Manila'
 
   try {
-    // Ginamitan ng secure https link para hindi harangin ng modernong browser security layers
     const data = await $fetch(`http://api.weatherapi.com/v1/forecast.json?key=8276fe2ecbcf4e1cb0132726262906&q=Manila&days=3&aqi=no&alerts=no`)
     currentWeather.value = data
   } catch (err) {
     console.error("Fetch error:", err)
-    errorMessage.value = `Hindi mahanap ang panahon para sa lungsod na "${cityQuery}"`
-    currentWeather.value = null
-  } finally {
-    isLoading.value = false
   }
 }
 
-// AWTOMATIKONG REFRESH: Babantayan nito kung nagbago ang URL Parameter na ?q=
+// Babantayan nito ang pagbabago sa URL params query string (?q=)
 watch(
   () => route.query.q, 
   () => {
@@ -111,7 +89,9 @@ watch(
   }
 )
 
-onMounted(getWeatherData)
+onMounted(() => {
+  getWeatherData()
+})
 </script>
 
 <style scoped>
@@ -134,24 +114,14 @@ onMounted(getWeatherData)
   margin-bottom: 20px;
 }
 
-.loading-state, .error-state {
-  padding: 40px 20px;
-  font-size: 16px;
-  font-weight: 500;
-  color: #2c3e50;
-}
-
-.error-state {
-  color: #dc2626;
-}
-
-/* Refresh Button sa Ilalim */
+/* Transparent Button Configuration */
 .refresh-btn {
   margin-top: 20px;
   text-transform: none;
   font-weight: bold;
   letter-spacing: 0.5px;
   border-radius: 10px;
+  border-width: 2px;
 }
 
 /* Main Display Container */
