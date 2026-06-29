@@ -74,7 +74,7 @@ const getWeatherData = async () => {
   const cityQuery = route.query.q || 'Manila'
 
   try {
-    const data = await $fetch(`http://api.weatherapi.com/v1/forecast.json?key=8276fe2ecbcf4e1cb0132726262906&q=Manila&days=3&aqi=no&alerts=no`)
+    const data = await $fetch(`https://api.weatherapi.com/v1/forecast.json?key=8276fe2ecbcf4e1cb0132726262906&q=Manila&days=3&aqi=no&alerts=no`)
     currentWeather.value = data
   } catch (err) {
     console.error("Fetch error:", err)
