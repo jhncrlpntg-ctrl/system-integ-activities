@@ -2,8 +2,8 @@
   <div class="view-page">
     <h2>QR Code Information</h2>
 
-    <div v-if="qrData" class="result-box">
-      <p>Nabasang Impormasyon:</p>
+    <div v-if="qrData && qrData !== 'No data found'" class="result-box">
+      <p class="result-title">Nabasang Impormasyon:</p>
       <pre>{{ qrData }}</pre>
     </div>
 
@@ -11,6 +11,7 @@
       <p>Walang nabasang QR code.</p>
     </div>
 
+    <!-- Ginawang malaki at kapareho ng disenyo ng scan page button -->
     <button @click="goBack" class="btn back">
       Bumalik sa Scan
     </button>
@@ -37,40 +38,72 @@ const goBack = () => {
 
 <style scoped>
 .view-page {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 1rem;
+  /* Ginawang 900px para kapareho ng laki ng pinalaking scan.vue niyo */
+  max-width: 900px; 
+  margin: 3rem auto;
+  padding: 1.5rem;
   text-align: center;
 }
 
+h2 {
+  font-size: 2rem; /* Nilakihan ang title */
+  margin-bottom: 1.5rem;
+}
+
 .result-box {
-  padding: 1.5rem;
+  padding: 2rem; /* Nilakihan ang espasyo sa loob ng box */
   background: #f0f9ff;
-  border: 1px solid #bae6fd;
-  border-radius: 10px;
-  margin: 1.5rem 0;
+  border: 2px solid #bae6fd; /* Mas makapal na border */
+  border-radius: 16px; /* Bagay sa kurbada ng video feed */
+  margin: 2rem 0;
   text-align: left;
   word-break: break-all;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* May kaunting shadow para mag-pop out */
+}
+
+.result-title {
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #0369a1;
+  margin-bottom: 0.75rem;
 }
 
 pre {
   white-space: pre-wrap;
-  font-size: 1rem;
+  font-size: 1.1rem; /* Nilakihan ang font ng nabasang text */
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #e0f2fe;
+  font-family: monospace;
 }
 
 .no-data {
-  padding: 1.5rem;
+  padding: 2rem;
   background: #fef2f2;
-  border-radius: 10px;
+  border: 2px solid #fca5a5;
+  border-radius: 16px;
   color: #dc2626;
+  font-size: 1.2rem;
+  margin: 2rem 0;
 }
 
 .btn.back {
-  padding: 0.7rem 1.5rem;
+  /* Kaparehong-kapareho ng laki at disenyo sa scan page buttons mo */
+  padding: 1rem 2rem; 
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   background: #6b7280;
   color: white;
+  font-size: 1.2rem; 
+  font-weight: bold;
   cursor: pointer;
+  width: 250px; /* Mas malapad para madaling pindutin */
+  transition: all 0.2s ease;
+}
+
+.btn.back:hover {
+  opacity: 0.9;
+  transform: translateY(-2px); /* Umaangat din ng kaunti kapag hinover */
 }
 </style>

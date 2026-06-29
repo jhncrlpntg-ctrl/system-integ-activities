@@ -1,40 +1,45 @@
 <template>
   <div style="text-align: center; margin-top: 50px;">
     <h1>Welcome Back!</h1>
-   <v-card style="max-width: 500px; margin: 50px auto; padding: 30px; border-radius: 30px;">
-    <v-text-field
-      label="Email"
-      type="email"
-      outlined
-      style=" max-width: 500px; margin: 20px auto;"
-    />
-    <v-text-field
-      label="Password"
-      type="password"
-      outlined
-      style="max-width: 500px; margin: 20px auto;"
-    />
-    <v-btn block variant="tonal" color="primary" style="margin-top: 20px;">Login</v-btn>
+    <v-card style="max-width: 500px; margin: 50px auto; padding: 30px; border-radius: 30px;">
+      <v-text-field
+        label="Email"
+        type="email"
+        outlined
+        style="max-width: 500px; margin: 20px auto;"
+      />
+      <v-text-field
+        label="Password"
+        type="password"
+        outlined
+        style="max-width: 500px; margin: 20px auto;"
+      />
+      <v-btn block variant="tonal" color="primary" style="margin-top: 20px;">Login</v-btn>
 
-    <h3  style="margin-top: 30px;">Or</h3>
-    <v-btn block variant="elevated" color="red" style="margin-top: 10px;" @click = "loginWithGoogle">Sign in with Google</v-btn>
-
+      <h3 style="margin-top: 30px;">Or</h3>
+      <v-btn block variant="elevated" color="red" style="margin-top: 10px;" @click="loginWithGoogle">Sign in with Google</v-btn>
     </v-card>
   </div>
-  
 </template>
 
 <script lang="ts" setup>
-  //@ts-nocheck
-  const config = useRuntimeConfig()
+//@ts-nocheck
 
-  declare global {
-    interface Window {
-      google: any
-    }
+// 💡 INAYOS: Nilagay sa tamang itaas na bahagi ng script at dinagdagan ng layout: false
+definePageMeta({
+  layout: false,
+  middleware: 'auth'
+})
+
+const config = useRuntimeConfig()
+
+declare global {
+  interface Window {
+    google: any
   }
+}
 
-  const loginWithGoogle = () => {
+const loginWithGoogle = () => {
   const client = window.google.accounts.oauth2.initTokenClient({
     client_id: config.public.googleClientId,
     scope: 'openid email profile',
@@ -45,7 +50,7 @@
         }
       })
 
-      localStorage.setItem('google_user',JSON.stringify(userInfo))
+      localStorage.setItem('google_user', JSON.stringify(userInfo))
       localStorage.setItem('google_token', response.access_token)
 
       navigateTo('/')
@@ -53,14 +58,8 @@
   })
 
   client.requestAccessToken()
-
-  // @ts-nocheck
-  definePageMeta({
-  middleware: 'auth'
-})
- }
+}
 </script>
  
 <style>
-
 </style>

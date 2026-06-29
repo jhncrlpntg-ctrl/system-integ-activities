@@ -10,18 +10,18 @@
     >
 
       <v-avatar
-      size="90"
-      class="mb-3 elevation-3"
+        size="90"
+        class="mb-3 elevation-3"
       >
-      <v-img :src="user?.picture" />
+        <v-img :src="user?.picture" />
       </v-avatar>
 
       <h1 class="text-h5 font-weight-bold mb-1">
-      {{ user?.name }}
+        {{ user?.name }}
       </h1>
 
       <p class="text-body-2 text-grey-darken-1 mb-5">
-      {{ user?.email }}
+        {{ user?.email }}
       </p>
 
       <h3 class="mb-4">
@@ -30,29 +30,19 @@
 
       <LeafletMap />
 
+      <!-- 💡 Inalis na dito ang lumang QR-Code button dahil nasa sidebar na ito -->
 
       <v-btn
-      class="mt-5"
-      color="blue-darken-2"
-      size="large"
-      rounded="xl"
-      block
-      
-      @click="scan"
-      >QR-Code</v-btn>
-
-
-      <v-btn
-      class="mt-5"
-      color="red-darken-2"
-      size="large"
-      rounded="xl"
-      block
-      prepend-icon="mdi-logout"
-      @click="logout"
+        class="mt-5"
+        color="red-darken-2"
+        size="large"
+        rounded="xl"
+        block
+        prepend-icon="mdi-logout"
+        @click="logout"
       >
-      Logout
-    </v-btn>
+        Logout
+      </v-btn>
 
     </v-card>
 
@@ -68,9 +58,9 @@ definePageMeta({
   middleware: 'auth'
 })
 
-  const user = ref<any>(null)
+const user = ref<any>(null)
 
-  onMounted(() => {
+onMounted(() => {
   const savedUser = localStorage.getItem('google_user')
 
   if (!savedUser) {
@@ -87,17 +77,10 @@ const logout = () => {
   window.google?.accounts.id.disableAutoSelect()
   navigateTo('/login')
 }
-
-const router = useRouter()
-
-const scan = () => {
-  router.push('/scan')
-}
 </script>
 
 <style scoped>
-.text-center{
-  margin-top:40px;
+.text-center {
+  margin-top: 40px;
 }
-
 </style>

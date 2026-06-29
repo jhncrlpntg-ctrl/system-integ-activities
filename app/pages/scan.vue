@@ -12,16 +12,16 @@
 
     <div class="buttons">
 
-      <!-- START (hidden kapag scanning) -->
+      <!-- START SCAN (Solong button na lang kapag hindi nag-i-scan) -->
       <button
         v-if="!isScanning"
         @click="startScan"
-        class="btn start"
+        class="btn start single"
       >
         Start Scan
       </button>
 
-      <!-- STOP (visible lang kapag scanning) -->
+      <!-- STOP SCAN (Visible lang kapag scanning) -->
       <button
         v-if="isScanning"
         @click="stopScan"
@@ -70,7 +70,12 @@ const startScan = async () => {
     qrScannerInstance = new QrScanner(
       videoEl,
       (result) => {
-        stopScan()
+        if (qrScannerInstance) {
+          qrScannerInstance.stop()
+          qrScannerInstance.destroy()
+          qrScannerInstance = null
+        }
+        isScanning.value = false
 
         router.push({
           path: '/qr-view',
@@ -86,9 +91,7 @@ const startScan = async () => {
       }
     )
 
-    /* 🔥 IMPORTANT FIX */
     isScanning.value = true
-
     await qrScannerInstance.start()
 
   } catch (err) {
@@ -105,42 +108,53 @@ const stopScan = () => {
     qrScannerInstance.destroy()
     qrScannerInstance = null
   }
-
   isScanning.value = false
-
-  router.push('/')
 }
 </script>
 
 <style scoped>
 .scan-page {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 1rem;
+  max-width: 900px; 
+  margin: 3rem auto;
+  padding: 1.5rem;
   text-align: center;
+}
+
+h2 {
+  font-size: 2rem; 
+  margin-bottom: 1.5rem;
 }
 
 .video-feed {
   width: 100%;
-  max-height: 400px;
-  border: 3px solid #2563eb;
-  border-radius: 12px;
+  max-height: 550px; 
+  border: 4px solid #2563eb;
+  border-radius: 16px;
   background: #000;
-  margin: 1rem 0;
+  margin: 1.5rem 0;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); 
 }
 
 .buttons {
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 .btn {
-  padding: 0.7rem 1.5rem;
+  padding: 1rem 2rem; 
   border: none;
-  border-radius: 8px;
-  font-size: 1rem;
+  border-radius: 10px;
+  font-size: 1.2rem; 
+  font-weight: bold;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  opacity: 0.9;
+  transform: translateY(-2px); 
 }
 
 .start {
@@ -153,7 +167,9 @@ const stopScan = () => {
   color: white;
 }
 
+/* Ginawang parehong 250px ang lapad ng Start at Stop para pantay ang UI transitions */
 .single {
-  width: 200px;
+  width: 250px; 
 }
 </style>
+z

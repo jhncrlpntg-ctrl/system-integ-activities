@@ -1,6 +1,6 @@
 <template>
-  <v-app class="dark-theme-app">
-    <!-- 1. SIDEBAR / NAVIGATION DRAWER (Permanente sa Kaliwa) -->
+  <v-app class="weather-app-root">
+    <!-- 1. SIDEBAR / NAVIGATION DRAWER (Kaparehong-kapareho ng nasa default.vue mo) -->
     <v-navigation-drawer
       permanent
       color="#1e1e24"
@@ -26,7 +26,7 @@
 
       <v-divider color="#2a2a32"></v-divider>
 
-      <!-- Mga Menu Links -->
+      <!-- Mga Menu Links (Ginawang "Weather" para magkatugma) -->
       <v-list nav dense class="mt-4">
         
         <!-- Link 1: Profile / Home Dashboard -->
@@ -62,11 +62,11 @@
       </v-list>
     </v-navigation-drawer>
 
-    <!-- 2. MAIN CONTENT AREA (Dito awtomatikong lalabas ang mga pages mo) -->
-    <v-main class="main-content-wrapper">
-      <v-container fluid class="pa-6">
+    <!-- 2. MAIN CONTENT AREA (Dito nakalagay ang iyong magandang background image) -->
+    <v-main class="weather-layout-wrapper">
+      <div class="content-centered-container">
         <slot />
-      </v-container>
+      </div>
     </v-main>
   </v-app>
 </template>
@@ -87,9 +87,17 @@ onMounted(() => {
 })
 </script>
 
+<style>
+/* Ginagamit ang walang 'scoped' para maapektuhan pati ang mga parent containers ng Nuxt */
+html, body, #__nuxt, .v-application, .v-application__wrap {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+</style>
+
 <style scoped>
-/* Sinisiguro nitong dark ang app space mo gaya ng screenshots mo */
-.dark-theme-app {
+/* Sinisiguro nitong malinis ang root display */
+.weather-app-root {
   background-color: #121214 !important;
 }
 
@@ -149,9 +157,26 @@ onMounted(() => {
   font-weight: 600 !important;
 }
 
-/* Main transition space para swabe ang paglipat ng screen data */
-.main-content-wrapper {
-  background-color: #121214;
-  min-height: 100vh;
+/* MAIN BACKGROUND CONTAINER */
+.weather-layout-wrapper {
+  background-image: url('/images/bckgrnd.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  
+  height: 100vh;
+  width: 100%;
+}
+
+/* Nilalagay nito sa gitna ang Weather card mo sa natitirang space ng screen */
+.content-centered-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 </style>
